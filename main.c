@@ -133,12 +133,7 @@ int main(int argc, char *argv[]) {
 	Pos qhpos[4];
 	if (mcversion >= MC_1_13) {
 		featureConfig = SWAMP_HUT_CONFIG;
-		// setupGeneratorMC113() biome generation is slower and unnecessary.
-		// We are only interested in the biomes on land, which haven't changed
-		// since MC 1.7 except for some modified variants.
-		g = setupGeneratorMC17();
-		// Use the 1.13 Hills layer to get the correct modified biomes.
-		g.layers[L_HILLS_64].getMap = mapHills113;
+		g = setupGeneratorMC113();
 	} else {
 		featureConfig = FEATURE_CONFIG;
 		g = setupGeneratorMC17();
@@ -149,6 +144,7 @@ int main(int argc, char *argv[]) {
 	FILE *fp;
 
 	fp = fopen("out.txt", "w+");
+	fprintf(fp,"Using seed %ld and version %s\n", seed, versions[mcversion]);
 	for (int regPosX = -searchRange; regPosX < searchRange; ++regPosX) {
 		for (int regPosZ = -searchRange; regPosZ < searchRange; ++regPosZ) {
 			qhpos[0] = getStructurePos(featureConfig, seed, 0 + regPosX, 0 + regPosZ);
