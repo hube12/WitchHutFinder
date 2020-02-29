@@ -17,9 +17,14 @@ Valid [mcversion] are 1.7, 1.8, 1.9, 1.10, 1.11, 1.12, 1.13, 1.13.2, 1.14.
 
 Valid [searchRange] (optional) is in blocks, default is 150000 which correspond to -150000 to 150000 on both X and Z.
 
-Valid [filter] (optionale) is either 2, 3 or 4 for respectively only outputting double, triple or quad witch huts as minimum.
+Valid [filter] (optional) is either 2, 3 or 4 for respectively only outputting double, triple or quad witch huts as minimum.
 
 
+# Examples
+
+./WitchHutFinder 1.12 181201211981019340 100000 2
+./WitchHutFinder 1.12 181201211981019340 100000 4
+./WitchHutFinder 1.14 181201211981019340 100000 2
 
 # TODO
 

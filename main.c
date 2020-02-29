@@ -124,7 +124,7 @@ int main(int argc, char *argv[]) {
 			usage();
 		}
 	}
-	OFFSET=-OFFSET;
+	OFFSET=OFFSET-4;
 	printf("Using seed %ld and version %s\n", seed, versions[mcversion]);
 	// Basic initialization
 	StructureConfig featureConfig;
@@ -201,7 +201,7 @@ int main(int argc, char *argv[]) {
 						if (euclideanDistance(qhpos[correctPos[i]].x, qhpos[correctPos[i]].z, x, z) > 16384)
 							valid = 0;
 					}
-					if (valid) {
+					if (valid && maxi==OFFSET+4) {
 						printf("CENTER for %d huts: %d,%d\n", maxi, x, z);
 						fprintf(fp, "CENTER for %d huts: %d,%d\n", maxi, x, z);
 						results[maxi - 2]++;
