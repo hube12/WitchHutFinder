@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.13)
+set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_VERBOSE_MAKEFILE on)
+project (witch_hut_finder)
+set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -g -O3")
+add_executable(WitchHutFinder layers.h layers.c generator.h generator.c finders.h finders.c main.c)
