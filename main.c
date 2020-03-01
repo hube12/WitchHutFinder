@@ -6,6 +6,8 @@
 #include "generator.h"
 #include "finders.h"
 
+#define OPTIMIZATION 0
+
 static unsigned int str2int(const char *str, int h) {
 	return !str[h] ? 5381 : (str2int(str, h + 1) * 33) ^ (unsigned int) (str[h]);
 }
@@ -141,6 +143,10 @@ int main(int argc, char *argv[]) {
 	clock_t before = clock();
 	int results[3] = {0, 0, 0};
 	assert(seed != NULL);
+
+	Layer layerBiomeDummy;
+	setupLayer(256, &layerBiomeDummy, NULL, 200, NULL);
+	setWorldSeed(&layerBiomeDummy, seed);
 	FILE *fp;
 
 	fp = fopen("out.txt", "w+");
@@ -165,8 +171,23 @@ int main(int argc, char *argv[]) {
 			if (!skipTest) {
 				continue;
 			}
+			int areaX = (int) ((unsigned int) regPosX << 1u) + 1;
+			int areaZ = (int) ((unsigned int) regPosZ << 1u) + 1;
 			//printf("(%d,%d) (%d,%d) (%d,%d) (%d,%d)\n",qhpos[0].x,qhpos[0].z,qhpos[1].x,qhpos[1].z,qhpos[2].x,qhpos[2].z,qhpos[3].x,qhpos[3].z);
-
+			if (OPTIMIZATION) {
+				int swpc = 0;
+				setChunkSeed(&layerBiomeDummy, areaX + 1, areaZ + 1);
+				swpc += mcNextInt(&layerBiomeDummy, 6) == 5;
+				setChunkSeed(&layerBiomeDummy, areaX, areaZ + 1);
+				swpc += mcNextInt(&layerBiomeDummy, 6) == 5;
+				setChunkSeed(&layerBiomeDummy, areaX + 1, areaZ);
+				swpc += mcNextInt(&layerBiomeDummy, 6) == 5;
+				setChunkSeed(&layerBiomeDummy, areaX, areaZ);
+				swpc += mcNextInt(&layerBiomeDummy, 6) == 5;
+				if (swpc<OFFSET+4){
+					continue;
+				}
+			}
 			int count = 0;
 			applySeed(&g, seed);
 			int correctPos[4] = {-1, -1, -1, -1};
