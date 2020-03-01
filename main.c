@@ -6,7 +6,7 @@
 #include "generator.h"
 #include "finders.h"
 
-static const unsigned int str2int(const char *str, int h) {
+static unsigned int str2int(const char *str, int h) {
 	return !str[h] ? 5381 : (str2int(str, h + 1) * 33) ^ (unsigned int) (str[h]);
 }
 
@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
 	int64_t seed = (int64_t) NULL;
 	int searchRange = 300;
 	char *endptr;
-	int OFFSET=2;
+	int OFFSET = 2;
 	// Get the information to start the program
 	if (argc > 2) {
 		mcversion = parse_version(argv[1]);
@@ -103,8 +103,8 @@ int main(int argc, char *argv[]) {
 			fprintf(stderr, "Search Range contained letters\n");
 			usage();
 		}
-		if (searchRange<0){
-			fprintf(stderr,"Search range should be positive");
+		if (searchRange < 0) {
+			fprintf(stderr, "Search range should be positive");
 			usage();
 		}
 	}
@@ -119,12 +119,12 @@ int main(int argc, char *argv[]) {
 			fprintf(stderr, "Filter contained letters\n");
 			usage();
 		}
-		if (OFFSET<2 || OFFSET>4){
-			fprintf(stderr,"Filter not in range");
+		if (OFFSET < 2 || OFFSET > 4) {
+			fprintf(stderr, "Filter not in range");
 			usage();
 		}
 	}
-	OFFSET=OFFSET-4;
+	OFFSET = OFFSET - 4;
 	printf("Using seed %ld and version %s\n", seed, versions[mcversion]);
 	// Basic initialization
 	StructureConfig featureConfig;
@@ -144,13 +144,27 @@ int main(int argc, char *argv[]) {
 	FILE *fp;
 
 	fp = fopen("out.txt", "w+");
-	fprintf(fp,"Using seed %ld and version %s\n", seed, versions[mcversion]);
+	fprintf(fp, "Using seed %ld and version %s\n", seed, versions[mcversion]);
 	for (int regPosX = -searchRange; regPosX < searchRange; ++regPosX) {
 		for (int regPosZ = -searchRange; regPosZ < searchRange; ++regPosZ) {
+			int skipTest = 0;
 			qhpos[0] = getStructurePos(featureConfig, seed, 0 + regPosX, 0 + regPosZ);
 			qhpos[1] = getStructurePos(featureConfig, seed, 0 + regPosX, 1 + regPosZ);
+			if (euclideanDistance(qhpos[0].x, qhpos[0].z, qhpos[1].x, qhpos[1].z) < 65536) {
+				skipTest = 1;
+			}
 			qhpos[2] = getStructurePos(featureConfig, seed, 1 + regPosX, 0 + regPosZ);
+			if (skipTest || euclideanDistance(qhpos[0].x, qhpos[0].z, qhpos[2].x, qhpos[2].z) < 65536 || euclideanDistance(qhpos[1].x, qhpos[1].z, qhpos[2].x, qhpos[2].z) < 65536) {
+				skipTest = 1;
+			}
 			qhpos[3] = getStructurePos(featureConfig, seed, 1 + regPosX, 1 + regPosZ);
+			if (skipTest || euclideanDistance(qhpos[0].x, qhpos[0].z, qhpos[3].x, qhpos[3].z) < 65536 || euclideanDistance(qhpos[1].x, qhpos[1].z, qhpos[3].x, qhpos[3].z) < 65536
+				|| euclideanDistance(qhpos[2].x, qhpos[2].z, qhpos[3].x, qhpos[3].z) < 65536) {
+				skipTest = 1;
+			}
+			if (!skipTest) {
+				continue;
+			}
 			//printf("(%d,%d) (%d,%d) (%d,%d) (%d,%d)\n",qhpos[0].x,qhpos[0].z,qhpos[1].x,qhpos[1].z,qhpos[2].x,qhpos[2].z,qhpos[3].x,qhpos[3].z);
 
 			int count = 0;
@@ -201,7 +215,7 @@ int main(int argc, char *argv[]) {
 						if (euclideanDistance(qhpos[correctPos[i]].x, qhpos[correctPos[i]].z, x, z) > 16384)
 							valid = 0;
 					}
-					if (valid && maxi>=OFFSET+4) {
+					if (valid && maxi >= OFFSET + 4) {
 						printf("CENTER for %d huts: %d,%d\n", maxi, x, z);
 						fprintf(fp, "CENTER for %d huts: %d,%d\n", maxi, x, z);
 						results[maxi - 2]++;
