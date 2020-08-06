@@ -6,7 +6,8 @@
 #include "generator.h"
 #include "finders.h"
 
-#define OPTIMIZATION 0
+#define OPTIMIZATION 1
+
 
 static unsigned int str2int(const char *str, int h) {
     return !str[h] ? 5381 : (str2int(str, h + 1) * 33) ^ (unsigned int) (str[h]);

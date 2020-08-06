@@ -1,10 +1,9 @@
 #include "generator.h"
-#include "layers.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#define LARGE 1
 
 void setupLayer(int scale, Layer *l, Layer *p, int s, void (*getMap)(Layer *layer, int *out, int x, int z, int w, int h))
 {
@@ -44,8 +43,11 @@ LayerStack setupGeneratorMC17()
     }
 
     LayerStack g;
-
-    g.layerNum = 44;
+#ifdef LARGE
+    g.layerNum = 46;
+#else
+    g.layerNum=44;
+#endif
     g.layers = (Layer*) malloc(sizeof(Layer)*g.layerNum);
 
     //         SCALE    LAYER          PARENT      SEED  LAYER_FUNCTION
@@ -77,7 +79,33 @@ LayerStack setupGeneratorMC17()
     setupLayer( 256, &g.layers[22], &g.layers[17],  100, mapRiverInit);
     setupLayer( 128, &g.layers[23], &g.layers[22], 1000, mapZoom);
     setupLayer(  64, &g.layers[24], &g.layers[23], 1001, mapZoom);
+#ifdef LARGE
+    setupMultiLayer(64, &g.layers[25], &g.layers[21], &g.layers[24], 1000, mapHills);
 
+    setupLayer(  64, &g.layers[26], &g.layers[25], 1001, mapRareBiome);
+    setupLayer(  32, &g.layers[27], &g.layers[26], 1000, mapZoom);
+    setupLayer(  32, &g.layers[28], &g.layers[27],    3, mapAddIsland);
+    setupLayer(  16, &g.layers[29], &g.layers[28], 1001, mapZoom);
+    setupLayer(  16, &g.layers[30], &g.layers[29], 1000, mapShore);
+    setupLayer(   8, &g.layers[31], &g.layers[30], 1002, mapZoom);
+    setupLayer(   4, &g.layers[32], &g.layers[31], 1003, mapZoom);
+    setupLayer(   2, &g.layers[33], &g.layers[32], 1004, mapZoom);
+    setupLayer(   1, &g.layers[34], &g.layers[33], 1005, mapZoom);
+    setupLayer(   0, &g.layers[35], &g.layers[34], 1000, mapSmooth);
+
+    // river layer chain
+    setupLayer( 128, &g.layers[36], &g.layers[22], 1000, mapZoom);
+    setupLayer(  64, &g.layers[37], &g.layers[36], 1001, mapZoom);
+    setupLayer(  32, &g.layers[38], &g.layers[37], 1000, mapZoom);
+    setupLayer(  16, &g.layers[39], &g.layers[38], 1001, mapZoom);
+    setupLayer(   8, &g.layers[40], &g.layers[39], 1002, mapZoom);
+    setupLayer(   4, &g.layers[41], &g.layers[40], 1003, mapZoom);
+    setupLayer(   4, &g.layers[42], &g.layers[41],    1, mapRiver);
+    setupLayer(   4, &g.layers[43], &g.layers[42], 1000, mapSmooth);
+
+    setupMultiLayer(4, &g.layers[44], &g.layers[35], &g.layers[43], 100, mapRiverMix);
+    setupLayer(   1, &g.layers[45], &g.layers[44],   10, mapVoronoiZoom);
+#else
     setupMultiLayer(64, &g.layers[25], &g.layers[21], &g.layers[24], 1000, mapHills);
 
     setupLayer(  64, &g.layers[26], &g.layers[25], 1001, mapRareBiome);
@@ -101,7 +129,7 @@ LayerStack setupGeneratorMC17()
 
     setupMultiLayer(4, &g.layers[42], &g.layers[33], &g.layers[41], 100, mapRiverMix);
     setupLayer(   1, &g.layers[43], &g.layers[42],   10, mapVoronoiZoom);
-
+#endif
     return g;
 }
 
@@ -114,8 +142,11 @@ LayerStack setupGeneratorMC113()
     }
 
     LayerStack g;
-
-    g.layerNum = 52;
+#ifdef LARGE
+    g.layerNum = 54;
+#else
+    g.layerNum=52;
+#endif
     g.layers = (Layer *) malloc(sizeof(Layer) * g.layerNum);
 
     //         SCALE    LAYER          PARENT      SEED  LAYER_FUNCTION
@@ -151,13 +182,47 @@ LayerStack setupGeneratorMC113()
 
     setupMultiLayer(64, &g.layers[25], &g.layers[21], &g.layers[24], 1000, mapHills113);
 
+
+
     setupLayer(  64, &g.layers[26], &g.layers[25], 1001, mapRareBiome);
+
     setupLayer(  32, &g.layers[27], &g.layers[26], 1000, mapZoom);
     setupLayer(  32, &g.layers[28], &g.layers[27],    3, mapAddIsland);
     setupLayer(  16, &g.layers[29], &g.layers[28], 1001, mapZoom);
     setupLayer(  16, &g.layers[30], &g.layers[29], 1000, mapShore);
     setupLayer(   8, &g.layers[31], &g.layers[30], 1002, mapZoom);
     setupLayer(   4, &g.layers[32], &g.layers[31], 1003, mapZoom);
+#ifdef LARGE
+    setupLayer(   8, &g.layers[33], &g.layers[32], 1004, mapZoom);
+    setupLayer(   4, &g.layers[34], &g.layers[33], 1005, mapZoom);
+    setupLayer(   4, &g.layers[35], &g.layers[32], 1000, mapSmooth);
+
+    // river layer chain
+    setupLayer( 128, &g.layers[36], &g.layers[22], 1000, mapZoom);
+    setupLayer(  64, &g.layers[37], &g.layers[35], 1001, mapZoom);
+    setupLayer(  32, &g.layers[38], &g.layers[37], 1000, mapZoom);
+    setupLayer(  16, &g.layers[39], &g.layers[38], 1001, mapZoom);
+    setupLayer(   8, &g.layers[40], &g.layers[39], 1002, mapZoom);
+    setupLayer(   4, &g.layers[41], &g.layers[40], 1003, mapZoom);
+    setupLayer(   4, &g.layers[42], &g.layers[41],    1, mapRiver);
+    setupLayer(   4, &g.layers[43], &g.layers[42], 1000, mapSmooth);
+
+    setupMultiLayer(4, &g.layers[44], &g.layers[35], &g.layers[43], 100, mapRiverMix);
+
+    // ocean variants
+    setupLayer( 256, &g.layers[45],          NULL,    2, mapOceanTemp);
+    g.layers[45].oceanRnd = (OceanRnd *) malloc(sizeof(OceanRnd));
+    setupLayer( 128, &g.layers[46], &g.layers[45], 2001, mapZoom);
+    setupLayer(  64, &g.layers[47], &g.layers[46], 2002, mapZoom);
+    setupLayer(  32, &g.layers[48], &g.layers[47], 2003, mapZoom);
+    setupLayer(  16, &g.layers[49], &g.layers[48], 2004, mapZoom);
+    setupLayer(   8, &g.layers[50], &g.layers[49], 2005, mapZoom);
+    setupLayer(   4, &g.layers[51], &g.layers[50], 2006, mapZoom);
+
+    setupMultiLayer(4, &g.layers[52], &g.layers[44], &g.layers[51], 100, mapOceanMix);
+
+    setupLayer(1, &g.layers[53], &g.layers[52],   10, mapVoronoiZoom);
+#else
     setupLayer(   4, &g.layers[33], &g.layers[32], 1000, mapSmooth);
 
     // river layer chain
@@ -185,7 +250,7 @@ LayerStack setupGeneratorMC113()
     setupMultiLayer(4, &g.layers[50], &g.layers[42], &g.layers[49], 100, mapOceanMix);
 
     setupLayer(1, &g.layers[51], &g.layers[50],   10, mapVoronoiZoom);
-
+#endif
     return g;
 }
 
@@ -209,7 +274,6 @@ static void getMaxArea(Layer *layer, int areaX, int areaZ, int *maxX, int *maxZ)
 {
     if (layer == NULL)
         return;
-
     if (layer->getMap == mapZoom)
     {
         areaX = (areaX >> 1) + 2;
@@ -243,16 +307,16 @@ static void getMaxArea(Layer *layer, int areaX, int areaZ, int *maxX, int *maxZ)
 
     if (areaX > *maxX) *maxX = areaX;
     if (areaZ > *maxZ) *maxZ = areaZ;
-
     getMaxArea(layer->p, areaX, areaZ, maxX, maxZ);
     getMaxArea(layer->p2, areaX, areaZ, maxX, maxZ);
+
 }
 
 int calcRequiredBuf(Layer *layer, int areaX, int areaZ)
 {
     int maxX = areaX, maxZ = areaZ;
-    getMaxArea(layer, areaX, areaZ, &maxX, &maxZ);
 
+    getMaxArea(layer, areaX, areaZ, &maxX, &maxZ);
     return maxX * maxZ;
 }
 
