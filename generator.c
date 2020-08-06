@@ -193,9 +193,9 @@ LayerStack setupGeneratorMC113()
     setupLayer(   8, &g.layers[31], &g.layers[30], 1002, mapZoom);
     setupLayer(   4, &g.layers[32], &g.layers[31], 1003, mapZoom);
 #ifdef LARGE
-    setupLayer(   8, &g.layers[33], &g.layers[32], 1004, mapZoom);
-    setupLayer(   4, &g.layers[34], &g.layers[33], 1005, mapZoom);
-    setupLayer(   4, &g.layers[35], &g.layers[32], 1000, mapSmooth);
+    setupLayer(   2, &g.layers[33], &g.layers[32], 1004, mapZoom);
+    setupLayer(   1, &g.layers[34], &g.layers[33], 1005, mapZoom);
+    setupLayer(   0, &g.layers[35], &g.layers[34], 1000, mapSmooth);
 
     // river layer chain
     setupLayer( 128, &g.layers[36], &g.layers[22], 1000, mapZoom);
